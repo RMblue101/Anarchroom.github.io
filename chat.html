@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anarcroom - Sala {{ codigo }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='anarcroom.css') }}">
+    <title>Anarcroom - Sala EXEMPLO</title>
+    <link rel="stylesheet" href="static/anarcroom.css">
 </head>
 <body>
     <div class="container">
         <div class="anarcho-logo">A</div>
         
     <h1>Anarcroom</h1>
-        <p class="tagline-aggressive">Sala: {{ codigo }}</p>
+        <p class="tagline-aggressive">Sala: EXEMPLO</p>
         
         <hr>
         
@@ -48,7 +48,7 @@
         
         <div class="section" id="exitSection" style="display: none;">
             <p class="tagline">Conversas efêmeras. Sem história. Sem vigilância.</p>
-            <a href="{{ url_for('index') }}" style="display: inline-block; width: 100%; text-align: center; padding: 10px;">
+            <a href="static" style="display: inline-block; width: 100%; text-align: center; padding: 10px;">
                 ← Sair da Sala
             </a>
         </div>
@@ -73,7 +73,7 @@
 
         let username = "";
         let joined = false;
-        let roomCode = "{{ codigo }}";
+        let roomCode = "EXEMPLO";
 
         // Debug: log connection events
         socket.on("connect", () => {

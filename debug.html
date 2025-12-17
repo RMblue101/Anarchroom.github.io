@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Debug Chat</title>
+    <title>Debug Chat Firebase</title>
     <style>
         body { font-family: Arial; margin: 20px; }
         #logs { border: 1px solid #ccc; height: 300px; overflow: auto; padding: 10px; background: #f9f9f9; margin: 10px 0; }
@@ -13,95 +13,31 @@
     </style>
 </head>
 <body>
-    <h1>Depuração Socket.IO</h1>
+    <h1>Debug: Anarcroom (cliente estático)</h1>
+
+    <p>Esta página ajuda a testar a versão cliente do chat que usa <code>localStorage</code>.
+    Não existe servidor — todas as mensagens são guardadas localmente no browser por sala.</p>
 
     <div>
-        <input id="user" placeholder="Nome do utilizador" value="TestUser">
-        <button onclick="testJoin()">Entrar na Sala</button>
+        <input id="dbg_room" placeholder="Código da sala" value="TEST123">
+        <input id="dbg_user" placeholder="Nome" value="DebugUser">
+        <button onclick="dbgOpen()">Abrir Sala</button>
+        <button onclick="dbgClear()">Limpar Mensagens (local)</button>
     </div>
 
-    <div>
-        <input id="msg" placeholder="Escrever mensagem" disabled>
-        <button onclick="testSendMessage()" disabled id="sendBtn">Enviar</button>
-    </div>
+    <div style="margin-top:10px;">Abra <code>chat.html?room=TEU_CODIGO</code> para testar em modo estático.</div>
 
-    <h3>Registos:</h3>
-    <div id="logs"></div>
-
-    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
-        const socket = io("http://localhost:5000");
-        let roomCode = "3B4KIN";
-        let username = "";
-        let joined = false;
-
-        function addLog(message, type = "info") {
-            const logsDiv = document.getElementById("logs");
-            const entry = document.createElement("div");
-            entry.className = `log-entry ${type}`;
-            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            logsDiv.appendChild(entry);
-            logsDiv.scrollTop = logsDiv.scrollHeight;
-            console.log(`[${type}]`, message);
-        }
-
-        socket.on("connect", () => {
-            addLog("✓ Socket conectado com ID: " + socket.id, "success");
-        });
-
-        socket.on("disconnect", () => {
-            addLog("✗ Socket desconectado", "error");
-            joined = false;
-        });
-
-        socket.on("connect_error", err => {
-            addLog("✗ Erro de conexão: " + err, "error");
-        });
-
-        function testJoin() {
-            username = document.getElementById("user").value.trim();
-            if (!username) {
-                addLog("Erro: Nome vazio", "error");
-                return;
-            }
-
-            addLog(`Tentando entrar na sala "${roomCode}" com utilizador "${username}"`, "info");
-            socket.emit("join", { username: username, room: roomCode }, (ack) => {
-                addLog("Resposta do servidor ao join: " + JSON.stringify(ack), "info");
-            });
-
-            joined = true;
-            document.getElementById("msg").disabled = false;
-            document.getElementById("sendBtn").disabled = false;
-            document.getElementById("sendBtn").textContent = "Enviar";
-        }
-
-        function testSendMessage() {
-            const msgText = document.getElementById("msg").value.trim();
-            if (!msgText) {
-                addLog("Erro: Mensagem vazia", "error");
-                return;
-            }
-
-            addLog(`Enviando: "${msgText}" para sala "${roomCode}"`, "info");
-            socket.emit("message", {
-                user: username,
-                msg: msgText,
-                room: roomCode
-            }, (ack) => {
-                addLog("Resposta do servidor ao message: " + JSON.stringify(ack), "info");
-            });
-
-            document.getElementById("msg").value = "";
-        }
-
-        socket.on("message", (data) => {
-            addLog("Mensagem recebida: " + data, "success");
-        });
-
-        socket.on("response", (data) => {
-            addLog("Resposta do servidor: " + JSON.stringify(data), "success");
-        });
+    function dbgOpen(){
+        const r = document.getElementById('dbg_room').value.trim() || 'TEST123';
+        const u = document.getElementById('dbg_user').value.trim() || 'DebugUser';
+        window.location.href = `chat.html?room=${r}`;
+    }
+    function dbgClear(){
+        const r = document.getElementById('dbg_room').value.trim() || 'TEST123';
+        localStorage.removeItem('anarcroom_msgs_' + r);
+        alert('Mensagens locais removidas para a sala ' + r);
+    }
     </script>
 </body>
 </html>

@@ -1,141 +1,74 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANARCROOM - Sala EXEMPLO</title>
-    <link rel="stylesheet" href="anarcroom.css">
+  <meta charset="UTF-8">
+  <title>ANARCROOM</title>
+  <link rel="stylesheet" href="static/anarcroom.css">
 </head>
 <body>
-    <div class="container">
-        <div class="anarcho-logo">A</div>
-        
-    <h1>ANARCROOM</h1>
-        <p class="tagline-aggressive">Sala: EXEMPLO</p>
-        
-        <hr>
-        
-        <!-- JOIN SECTION -->
-        <div class="section" id="joinSection">
-            <h2>Entrar na Sala</h2>
-            <div class="form-group">
-                <label for="user">Escolhe um nome de guerreiro:</label>
-                <input id="user" type="text" placeholder="Teu nome anarcista" required style="width: 100%;">
-            </div>
-            <button onclick="entrar()" style="width: 100%;">
-                ⊙ Entrar e Começar a Destruir ⊙
-            </button>
-        </div>
-        
-        <hr>
-        
-        <!-- MESSAGES SECTION -->
-        <div class="section" id="messagesSection" style="display: none;">
-            <h3 id="userName"></h3>
-            <p class="tagline" id="connStatus"></p>
-            
-            <div id="messages"></div>
-            
-            <div class="form-group" style="margin-top: 20px;">
-                <input id="msg" type="text" placeholder="Escreve tua mensagem revolucionária..." style="width: 100%; margin-bottom: 10px;">
-                <button id="btnEnviar" onclick="enviar()" style="width: 100%;">
-                    ⊙ Enviar Mensagem ⊙
-                </button>
-            </div>
-        </div>
-        
-        <hr style="display: none;" id="exitHr">
-        
-        <div class="section" id="exitSection" style="display: none;">
-            <p class="tagline">Conversas efêmeras. Sem história. Sem vigilância.</p>
-            <a href="static" style="display: inline-block; width: 100%; text-align: center; padding: 10px;">
-                ← Sair da Sala
-            </a>
-        </div>
-    </div>
 
-    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-    <script>
-        // Detect if running locally or via tunnel
-        const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-        const serverURL = isLocalhost 
-            ? "http://localhost:5000" 
-            : window.location.origin; // Use current origin if not localhost
-        
-        console.log("Conectando a:", serverURL);
-        
-        const socket = io(serverURL, { 
-            reconnection: true,
-            reconnectionDelay: 1000,
-            reconnectionDelayMax: 5000,
-            reconnectionAttempts: 5
-        });
+<div class="container">
+  <h1>ANARCROOM</h1>
+  <p id="roomLabel"></p>
 
-        let username = "";
-        let joined = false;
-        let roomCode = "EXEMPLO";
+  <div id="joinSection">
+    <input id="user" placeholder="Username">
+    <button onclick="entrar()">Entrar</button>
+  </div>
 
-        // Debug: log connection events
-        socket.on("connect", () => {
-            console.log("✓ Socket conectado:", socket.id);
-            document.getElementById("connStatus").textContent = "✓ Conectado";
-        });
+  <div id="chat" style="display:none">
+    <div id="messages"></div>
+    <input id="msg" placeholder="Mensagem">
+    <button onclick="enviar()">Enviar</button>
+    <br><br>
+    <a href="index.html">← Sair</a>
+  </div>
+</div>
 
-        socket.on("disconnect", () => {
-            console.log("✗ Socket desconectado");
-            document.getElementById("connStatus").textContent = "✗ Desconectado";
-        });
+<script>
+// Client-only room chat using localStorage — works on GitHub Pages
+const params = new URLSearchParams(window.location.search);
+const room = params.get('room') || 'default';
+document.getElementById('roomLabel').textContent = 'Sala: ' + room;
 
-        socket.on("connect_error", err => { 
-            console.error("✗ Erro de conexão:", err);
-            document.getElementById("connStatus").textContent = "✗ Erro: " + err;
-        });
+let username = '';
+function loadMessages() {
+  const key = 'anarcroom_msgs_' + room;
+  const arr = JSON.parse(localStorage.getItem(key) || '[]');
+  const c = document.getElementById('messages');
+  c.innerHTML = '';
+  arr.forEach(m => {
+    const p = document.createElement('p');
+    const t = new Date(m.time).toLocaleTimeString();
+    p.textContent = `[${t}] ${m.user}: ${m.msg}`;
+    c.appendChild(p);
+  });
+  c.scrollTop = c.scrollHeight;
+}
 
-        function entrar() {
-            username = document.getElementById("user").value.trim();
-            if (!username) return alert("Escolhe um nome, soldado!");
-            if (joined) return;
-            
-            console.log("Entrando na sala:", roomCode, "com utilizador:", username);
-            socket.emit("join", { username, room: roomCode });
-            joined = true;
-            
-            // Update UI
-            document.getElementById("joinSection").style.display = "none";
-            document.getElementById("messagesSection").style.display = "block";
-            document.getElementById("exitHr").style.display = "block";
-            document.getElementById("exitSection").style.display = "block";
-            document.getElementById("userName").textContent = "Bem-vindo, " + username.toUpperCase();
-            document.getElementById("msg").focus();
-        }
+window.entrar = function(){
+  username = document.getElementById('user').value.trim();
+  if(!username) return alert('Escolhe um nome');
+  document.getElementById('joinSection').style.display = 'none';
+  document.getElementById('chat').style.display = 'block';
+  loadMessages();
+};
 
-        function enviar() {
-            if (!joined) return alert("Primeiro entra na sala!");
-            const msg = document.getElementById("msg").value.trim();
-            if (!msg) return;
-            
-            console.log("Enviando mensagem para sala:", roomCode, "msg:", msg);
-            socket.emit("message", { user: username, msg: msg, room: roomCode });
-            document.getElementById("msg").value = "";
-        }
+window.enviar = function(){
+  const txtEl = document.getElementById('msg');
+  const txt = txtEl.value.trim();
+  if(!txt) return;
+  const key = 'anarcroom_msgs_' + room;
+  const arr = JSON.parse(localStorage.getItem(key) || '[]');
+  arr.push({user: username, msg: txt, time: Date.now()});
+  localStorage.setItem(key, JSON.stringify(arr));
+  txtEl.value = '';
+  loadMessages();
+};
 
-        // Allow Enter key to send message
-        document.addEventListener("keydown", function(e) {
-            if (e.key === "Enter" && joined && document.getElementById("msg") === document.activeElement) {
-                enviar();
-            }
-        });
-
-        // Listen for messages from server
-        socket.on("message", (msg) => {
-            console.log("✓ Mensagem recebida do servidor:", msg);
-            const div = document.getElementById("messages");
-            const p = document.createElement("p");
-            p.textContent = msg;
-            div.appendChild(p);
-            div.scrollTop = div.scrollHeight;
-        });
-    </script>
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter' && document.activeElement.id === 'msg') enviar();
+});
+</script>
 </body>
-
 </html>

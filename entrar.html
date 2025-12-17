@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ANARCROOM - Entrar na Sala</title>
-        <link rel="stylesheet" href="anarcroom.css">
+        <link rel="stylesheet" href="static/anarcroom.css">
 </head>
 <body>
     <div class="container">
@@ -30,7 +30,7 @@
         </div>
         
         <div class="section">
-            <a href="static" style="display: inline-block; width: 100%; text-align: center; padding: 10px;">
+            <a href="index.html" style="display: inline-block; width: 100%; text-align: center; padding: 10px;">
                 Voltar ao Início
             </a>
         </div>
@@ -49,7 +49,8 @@
             alert("O código deve ter exatamente 6 caracteres!");
             return;
         }
-        window.location.href = `/sala/${codigo}`;
+        // Navigate to static chat page with room parameter (works on GitHub Pages)
+        window.location.href = `chat.html?room=${codigo}`;
     }
     
     document.getElementById("codigo").addEventListener("keydown", function(e) {
@@ -59,5 +60,4 @@
     });
     </script>
 </body>
-
 </html>

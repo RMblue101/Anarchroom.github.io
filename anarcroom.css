@@ -1,4 +1,4 @@
-/* Chat Corporativo - Design Profissional Único */
+/* Anarchroom - Chat Anônimo e Descentralizado */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 * {
@@ -41,10 +41,10 @@ body {
   max-width: 900px;
   margin: 0 auto;
   background-color: #ffffff;
-  border: 1px solid #cbd5e0;
+  border: 2px solid #2b5a8c;
   border-radius: 12px;
   padding: 40px;
-  box-shadow: 0 4px 20px rgba(26, 58, 82, 0.08);
+  box-shadow: 0 4px 20px rgba(26, 58, 82, 0.1);
 }
 
 /* HEADER COM LOGO */
@@ -52,7 +52,7 @@ body {
   text-align: center;
   margin-bottom: 30px;
   padding-bottom: 30px;
-  border-bottom: 2px solid #e5e9f0;
+  border-bottom: 3px solid #2b5a8c;
 }
 
 .header-logo {
@@ -65,8 +65,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 12px rgba(26, 58, 82, 0.1);
-  border: 2px solid #e5e9f0;
+  box-shadow: 0 2px 12px rgba(26, 58, 82, 0.15);
+  border: 3px solid #2b5a8c;
 }
 
 .header-logo img {
@@ -83,7 +83,7 @@ input[type="button"],
 textarea {
   font-family: 'Inter', inherit;
   background-color: #ffffff;
-  border: 1px solid #cbd5e0;
+  border: 2px solid #2b5a8c;
   color: #1a1a1a;
   padding: 12px 15px;
   margin: 8px 0;
@@ -100,9 +100,9 @@ textarea::placeholder {
 input[type="text"]:focus,
 textarea:focus {
   outline: none;
-  border-color: #2b5a8c;
+  border-color: #1a3a52;
   background-color: #f7fafd;
-  box-shadow: 0 0 0 3px rgba(43, 90, 140, 0.1);
+  box-shadow: 0 0 0 3px rgba(43, 90, 140, 0.15);
 }
 
 input[type="text"]:disabled {
@@ -124,7 +124,7 @@ button,
 input[type="submit"] {
   background: linear-gradient(135deg, #2b5a8c 0%, #1a3a52 100%);
   color: #ffffff;
-  border: none;
+  border: 2px solid #1a3a52;
   padding: 12px 24px;
   font-family: 'Inter', inherit;
   font-size: 0.95rem;
@@ -135,13 +135,13 @@ input[type="submit"] {
   border-radius: 8px;
   transition: all 0.2s ease;
   margin: 8px 4px;
-  box-shadow: 0 2px 8px rgba(43, 90, 140, 0.2);
+  box-shadow: 0 2px 8px rgba(43, 90, 140, 0.25);
 }
 
 button:hover,
 input[type="submit"]:hover {
   background: linear-gradient(135deg, #3a6fa1 0%, #2b5a8c 100%);
-  box-shadow: 0 4px 12px rgba(43, 90, 140, 0.3);
+  box-shadow: 0 4px 12px rgba(43, 90, 140, 0.35);
   transform: translateY(-2px);
 }
 
@@ -176,7 +176,7 @@ a:hover {
 
 /* MESSAGES BOX */
 #messages {
-  border: 1px solid #cbd5e0;
+  border: 2px solid #2b5a8c;
   background-color: #f7f9fc;
   height: 350px;
   overflow-y: auto;
@@ -196,12 +196,12 @@ a:hover {
 }
 
 #messages::-webkit-scrollbar-thumb {
-  background: #cbd5e0;
+  background: #2b5a8c;
   border-radius: 3px;
 }
 
 #messages::-webkit-scrollbar-thumb:hover {
-  background: #a0aec0;
+  background: #1a3a52;
 }
 
 #messages p {
@@ -237,17 +237,13 @@ a:hover {
   letter-spacing: 0.5px;
   margin: 15px 0;
   font-style: italic;
-}
-
-.tagline-aggressive {
-  color: #2b5a8c;
   font-weight: 600;
 }
 
 /* DIVIDERS */
 hr {
   border: none;
-  border-top: 1px solid #e5e9f0;
+  border-top: 2px solid #2b5a8c;
   margin: 25px 0;
 }
 
@@ -258,6 +254,8 @@ hr {
   border-left: 4px solid #2b5a8c;
   background-color: #f7f9fc;
   border-radius: 8px;
+  border: 2px solid #e5e9f0;
+  border-left: 4px solid #2b5a8c;
 }
 
 .section h2 {
@@ -306,7 +304,7 @@ hr {
   color: #2b5a8c;
   font-weight: 500;
   margin-bottom: 15px;
-  border: 1px solid #cbd5e0;
+  border: 2px solid #2b5a8c;
 }
 
 /* RESPONSIVO */

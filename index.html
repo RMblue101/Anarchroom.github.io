@@ -1,32 +1,32 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Corporativo - Comunicação Segura</title>
+  <title>Anarchroom - Chat Anónimo e Descentralizado</title>
   <link rel="stylesheet" href="anarcroom.css">
 </head>
 <body>
   <div class="container">
     <div class="header">
       <div class="header-logo">
-        <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo da Empresa">
+        <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo Anarchroom">
       </div>
-      <h1>Chat Corporativo</h1>
-      <p class="tagline">Comunicação Segura e Profissional</p>
+      <h1>⚡ Anarchroom ⚡</h1>
+      <p class="tagline">Chat Anónimo • Descentralizado • Temporário</p>
     </div>
     
     <div class="section">
-      <p>Bem-vindo à plataforma de comunicação corporativa. Crie salas seguras e temporárias para conversas privadas com sua equipa.</p>
-      <p style="margin-top: 12px; font-size: 0.9rem; color: #4a5568;">✓ Sem Registo • ✓ Criptografado • ✓ Sem Histórico Permanente • ✓ Tempo Real</p>
+      <p>Bem-vindo a <strong>Anarchroom</strong> — a plataforma de comunicação verdadeiramente anónima, sem registo, sem vigilância e sem histórico permanente.</p>
+      <p style="margin-top: 12px; font-size: 0.9rem; color: #4a5568;">✦ Sem Registo • ✦ Sem Vigilância • ✦ Sem Histórico • ✦ Tempo Real • ✦ Descentralizado</p>
     </div>
     
     <hr>
     
     <div class="section">
-      <h2>Criar Nova Sala</h2>
-      <p style="margin-bottom: 15px; color: #4a5568;">Gera automaticamente um código único para partilhar com outros utilizadores:</p>
-      <button onclick="criarSalaAleatoria()" style="width: 100%;">Gerar Sala</button>
+      <h2>⊙ Criar Sala Anónima</h2>
+      <p style="margin-bottom: 15px; color: #4a5568;">Gera automaticamente um código único para partilhar com outros anarquistas:</p>
+      <button onclick="criarSalaAleatoria()" style="width: 100%;">⊙ Gerar Sala Aleatória ⊙</button>
     </div>
     
     <hr>
@@ -36,17 +36,17 @@
     </div>
     
     <div class="section">
-      <h2>Entrar em Sala Existente</h2>
+      <h2>⊙ Entrar em Sala Existente</h2>
       <p style="margin-bottom: 15px; color: #4a5568;">Introduz o código da sala partilhado por outro utilizador:</p>
       <div class="form-group">
-        <input type="text" id="codigo" placeholder="Exemplo: A1B2C3" maxlength="6" autocomplete="off" style="text-transform: uppercase; text-align: center; font-size: 1.1rem; letter-spacing: 1px;">
+        <input type="text" id="codigo" placeholder="Ex: A1B2C3" maxlength="6" autocomplete="off" style="text-transform: uppercase; text-align: center; font-size: 1.1rem; letter-spacing: 1px;">
       </div>
-      <button onclick="entrarSala()" style="width: 100%;">Entrar na Sala</button>
+      <button onclick="entrarSala()" style="width: 100%;">⊙ Entrar na Sala ⊙</button>
     </div>
     
     <hr>
     
-    <p class="tagline" style="text-align: center;">Privacidade Garantida • Comunicação Criptografada • Salas Temporárias</p>
+    <p class="tagline" style="text-align: center;">Liberdade de Expressão • Anonimato Total • Caos Controlado</p>
   </div>
 
   <script>
@@ -67,7 +67,7 @@
     function entrarSala() {
       const codigo = document.getElementById("codigo").value.trim().toUpperCase();
       if (!codigo || codigo.length !== 6) {
-        alert("O código deve ter exatamente 6 caracteres!");
+        alert("O código deve ter exactamente 6 caracteres!");
         return;
       }
       window.location.href = `chat.html?room=${codigo}`;

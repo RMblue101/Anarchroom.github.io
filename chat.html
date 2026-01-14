@@ -1,49 +1,49 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Corporativo - Sala</title>
+  <title>Anarchroom - Sala de Chat</title>
   <link rel="stylesheet" href="anarcroom.css">
 </head>
 <body>
   <div class="container">
     <div class="header">
       <div class="header-logo">
-        <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo">
+        <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo Anarchroom">
       </div>
-      <h1>Chat Corporativo</h1>
+      <h1>⚡ Anarchroom ⚡</h1>
       <p id="roomLabel" class="tagline"></p>
     </div>
     
     <div id="joinSection" class="section">
-      <h2>Bem-vindo à Sala</h2>
+      <h2>Bem-vindo à Sala Anónima</h2>
       <div class="form-group">
-        <label for="user">Nome de Utilizador:</label>
-        <input type="text" id="user" placeholder="Insira seu nome" autocomplete="off" required>
+        <label for="user">Pseudónimo:</label>
+        <input type="text" id="user" placeholder="Escolha um pseudónimo" autocomplete="off" required>
       </div>
-      <button onclick="entrar()" style="width: 100%;">Entrar na Sala</button>
+      <button onclick="entrar()" style="width: 100%;">⊙ Entrar na Sala ⊙</button>
     </div>
     
     <div id="chat" style="display: none;">
       <div class="status">
-        <span id="userDisplay"></span> | <span id="onlineCount">0</span> utilizadores online
+        <span id="userDisplay"></span> • <span id="onlineCount">0</span> anarquistas conectados
       </div>
       
       <div id="messages"></div>
       
       <div class="section">
         <div class="form-group">
-          <label for="msg">Sua Mensagem:</label>
+          <label for="msg">Mensagem:</label>
           <div class="input-wrapper">
-            <input id="msg" type="text" placeholder="Escreva sua mensagem..." autocomplete="off" required>
-            <button onclick="enviar()">Enviar</button>
+            <input id="msg" type="text" placeholder="Escreva a sua mensagem…" autocomplete="off" required>
+            <button onclick="enviar()">⊙ Enviar ⊙</button>
           </div>
         </div>
       </div>
       
       <div class="section" style="text-align: center;">
-        <a href="index.html">← Voltar ao Início</a>
+        <a href="index.html">← Regressar ao Início</a>
       </div>
     </div>
   </div>
@@ -91,7 +91,7 @@
       
       if (!msgs.length) {
         const p = document.createElement('p');
-        p.textContent = '(Sem mensagens ainda)';
+        p.textContent = '(Sem mensagens ainda…)';
         p.style.color = '#a0aec0';
         p.style.textAlign = 'center';
         p.style.fontStyle = 'italic';
@@ -141,7 +141,7 @@
     window.entrar = function() {
       username = document.getElementById('user').value.trim();
       if (!username) {
-        alert('Por favor, insira um nome de utilizador');
+        alert('Por favor, escolha um pseudónimo!');
         return;
       }
 

@@ -2,73 +2,240 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>ANARCROOM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Corporativo - Sala</title>
   <link rel="stylesheet" href="anarcroom.css">
 </head>
 <body>
 
 <div class="container">
-  <h1>ANARCROOM</h1>
-  <p id="roomLabel"></p>
-
-  <div id="joinSection">
-    <input id="user" placeholder="Username">
-    <button onclick="entrar()">Entrar</button>
+  <div class="header">
+    <div class="header-logo">
+      <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo">
+    </div>
+    <h1>Chat Corporativo</h1>
+    <p id="roomLabel" class="tagline"></p>
   </div>
 
-  <div id="chat" style="display:none">
+  <div id="joinSection" class="section">
+    <h2>Bem-vindo</h2>
+    <div class="form-group">
+      <label for="user">Nome de Utilizador:</label>
+      <input id="user" type="text" placeholder="Insira seu nome" required>
+    </div>
+    <button onclick="entrar()" style="width: 100%;">Entrar na Sala</button>
+  </div>
+
+  <div id="chat" style="display: none;">
+    <div class="status">
+      <span id="userDisplay"></span> | <span id="onlineCount">0</span> utilizadores online
+    </div>
+    
     <div id="messages"></div>
-    <input id="msg" placeholder="Mensagem">
-    <button onclick="enviar()">Enviar</button>
-    <br><br>
-    <a href="index.html">← Sair</a>
+    
+    <div class="section">
+      <div class="form-group">
+        <label for="msg">Sua Mensagem:</label>
+        <div class="input-wrapper">
+          <input id="msg" type="text" placeholder="Escreva sua mensagem..." required>
+          <button onclick="enviar()">Enviar</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section" style="text-align: center;">
+      <a href="index.html">← Voltar ao Início</a>
+    </div>
   </div>
 </div>
 
 <script>
-// Client-only room chat using localStorage — works on GitHub Pages
+// Chat em Tempo Real - Broadcast Channel API + localStorage
 const params = new URLSearchParams(window.location.search);
 const room = params.get('room') || 'default';
-document.getElementById('roomLabel').textContent = 'Sala: ' + room;
+document.getElementById('roomLabel').textContent = 'Sala: ' + room.toUpperCase();
 
 let username = '';
+let bc = null;
+let pollInterval = null;
+let lastMessageTimestamp = 0;
+
+// Tentar usar Broadcast Channel API (mais moderno)
+if (typeof BroadcastChannel !== 'undefined') {
+  bc = new BroadcastChannel('chat_room_' + room);
+  bc.onmessage = (event) => {
+    if (event.data.type === 'newMessage') {
+      loadMessages();
+      updateOnlineCount();
+    } else if (event.data.type === 'userJoined') {
+      updateOnlineCount();
+    }
+  };
+}
+
+function formatTime(timestamp) {
+  const date = new Date(timestamp);
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${hours}:${minutes}:${seconds}`;
+}
+
 function loadMessages() {
-  const key = 'anarcroom_msgs_' + room;
+  const key = 'anarchroom_msgs_' + room;
   const arr = JSON.parse(localStorage.getItem(key) || '[]');
-  const c = document.getElementById('messages');
-  c.innerHTML = '';
+  const messagesDiv = document.getElementById('messages');
+  
+  // Limpar e recarregar apenas se houver novas mensagens
+  if (arr.length === 0) {
+    messagesDiv.innerHTML = '<p style="color: #a0aec0; text-align: center;">Sem mensagens ainda...</p>';
+    return;
+  }
+
+  messagesDiv.innerHTML = '';
   arr.forEach(m => {
     const p = document.createElement('p');
-    const t = new Date(m.time).toLocaleTimeString();
-    p.textContent = `[${t}] ${m.user}: ${m.msg}`;
-    c.appendChild(p);
+    const time = formatTime(m.time);
+    p.innerHTML = `<span class="message-time">[${time}]</span> <strong>${m.user}:</strong> ${m.msg}`;
+    messagesDiv.appendChild(p);
   });
-  c.scrollTop = c.scrollHeight;
+  
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  lastMessageTimestamp = arr[arr.length - 1].time || 0;
+}
+
+function updateOnlineCount() {
+  const key = 'anarchroom_users_' + room;
+  const users = JSON.parse(localStorage.getItem(key) || '{}');
+  const now = Date.now();
+  const timeout = 45000; // 45 segundos
+  
+  Object.keys(users).forEach(user => {
+    if (now - users[user] > timeout) {
+      delete users[user];
+    }
+  });
+  
+  localStorage.setItem(key, JSON.stringify(users));
+  document.getElementById('onlineCount').textContent = Object.keys(users).length;
+}
+
+// Atualizar heartbeat do utilizador periodicamente
+function updateHeartbeat() {
+  if (username) {
+    const key = 'anarchroom_users_' + room;
+    const users = JSON.parse(localStorage.getItem(key) || '{}');
+    users[username] = Date.now();
+    localStorage.setItem(key, JSON.stringify(users));
+    updateOnlineCount();
+    
+    // Notificar via Broadcast Channel
+    if (bc) {
+      bc.postMessage({ type: 'heartbeat', user: username });
+    }
+  }
 }
 
 window.entrar = function(){
   username = document.getElementById('user').value.trim();
-  if(!username) return alert('Escolhe um nome');
+  if (!username) {
+    alert('Por favor, insira um nome de utilizador');
+    return;
+  }
+  
+  // Registar utilizador
+  const key = 'anarchroom_users_' + room;
+  const users = JSON.parse(localStorage.getItem(key) || '{}');
+  users[username] = Date.now();
+  localStorage.setItem(key, JSON.stringify(users));
+  
   document.getElementById('joinSection').style.display = 'none';
   document.getElementById('chat').style.display = 'block';
+  document.getElementById('userDisplay').textContent = '👤 ' + username;
+  
   loadMessages();
+  updateOnlineCount();
+  
+  // Notificar entrada via Broadcast
+  if (bc) {
+    bc.postMessage({ type: 'userJoined', user: username });
+  }
+  
+  // Polling como fallback (mais rápido agora)
+  pollInterval = setInterval(() => {
+    updateHeartbeat();
+    loadMessages();
+  }, 800); // 800ms para tempo real mais suave
+  
+  // Atualizar heartbeat a cada 10s
+  setInterval(updateHeartbeat, 10000);
+  
+  document.getElementById('msg').focus();
 };
 
 window.enviar = function(){
   const txtEl = document.getElementById('msg');
   const txt = txtEl.value.trim();
-  if(!txt) return;
-  const key = 'anarcroom_msgs_' + room;
-  const arr = JSON.parse(localStorage.getItem(key) || '[]');
-  arr.push({user: username, msg: txt, time: Date.now()});
-  localStorage.setItem(key, JSON.stringify(arr));
+  if (!txt) return;
+  
+  const msgKey = 'anarchroom_msgs_' + room;
+  const arr = JSON.parse(localStorage.getItem(msgKey) || '[]');
+  const newMsg = {user: username, msg: txt, time: Date.now()};
+  arr.push(newMsg);
+  localStorage.setItem(msgKey, JSON.stringify(arr));
+  
+  // Notificar todos os clients via Broadcast Channel
+  if (bc) {
+    bc.postMessage({ 
+      type: 'newMessage',
+      room: room,
+      message: newMsg
+    });
+  }
+  
   txtEl.value = '';
   loadMessages();
+  txtEl.focus();
 };
 
 document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter' && document.activeElement.id === 'msg') enviar();
+  if (e.key === 'Enter' && document.activeElement.id === 'msg') {
+    e.preventDefault();
+    enviar();
+  }
 });
+
+// Monitorizar alterações no localStorage de outras abas
+window.addEventListener('storage', (e) => {
+  if (e.key === 'anarchroom_msgs_' + room || e.key === 'anarchroom_users_' + room) {
+    loadMessages();
+    updateOnlineCount();
+  }
+});
+
+// Limpar ao sair
+window.addEventListener('beforeunload', () => {
+  if (username) {
+    const key = 'anarchroom_users_' + room;
+    const users = JSON.parse(localStorage.getItem(key) || '{}');
+    delete users[username];
+    localStorage.setItem(key, JSON.stringify(users));
+    
+    // Notificar saída
+    if (bc) {
+      bc.postMessage({ type: 'userLeft', user: username });
+      bc.close();
+    }
+  }
+  if (pollInterval) clearInterval(pollInterval);
+});
+
+// Iniciar polling mesmo sem entrar (para outras abas)
+pollInterval = setInterval(() => {
+  loadMessages();
+  updateOnlineCount();
+}, 1000);
 </script>
+
 </body>
 </html>

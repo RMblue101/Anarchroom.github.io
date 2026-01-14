@@ -3,47 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANARCROOM - Comunicação Anónima e Segura</title>
+  <title>Chat Corporativo - Comunicação Segura</title>
   <link rel="stylesheet" href="anarcroom.css">
 </head>
 <body>
   <div class="container">
-    <div class="anarcho-logo">A</div>
-    
-    <h1>ANARCROOM</h1>
-    <p style="text-align: center; color: #ff6b6b; font-size: 0.95rem; letter-spacing: 1px; margin-bottom: 20px;">COMUNICAÇÃO ANÓNIMA E SEGURA</p>
-    
-    <hr>
+    <div class="header">
+      <div class="header-logo">
+        <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo da Empresa">
+      </div>
+      <h1>Chat Corporativo</h1>
+      <p class="tagline">Comunicação Segura e Profissional</p>
+    </div>
     
     <div class="section">
-      <p>Bem-vindo a uma plataforma de comunicação descentralizada e anonimizada. Crie salas privadas e efêmeras para conversas seguras.</p>
-      <p style="margin-top: 10px; font-size: 0.85rem; color: #a8a8a8;">✓ Sem registo • ✓ Sem histórico • ✓ Sem vigilância • ✓ Comunicação em tempo real</p>
+      <p>Bem-vindo à plataforma de comunicação corporativa. Crie salas seguras e temporárias para conversas privadas com sua equipa.</p>
+      <p style="margin-top: 12px; font-size: 0.9rem; color: #4a5568;">✓ Sem Registo • ✓ Criptografado • ✓ Sem Histórico Permanente • ✓ Tempo Real</p>
     </div>
     
     <hr>
     
     <div class="section">
       <h2>Criar Nova Sala</h2>
-      <p style="margin-bottom: 15px;">Gera automaticamente um código para compartilhar com outros utilizadores:</p>
-      <button onclick="criarSalaAleatoria()">⊙ Gerar Sala Aleatória ⊙</button>
+      <p style="margin-bottom: 15px; color: #4a5568;">Gera automaticamente um código único para partilhar com outros utilizadores:</p>
+      <button onclick="criarSalaAleatoria()" style="width: 100%;">Gerar Sala</button>
     </div>
     
     <hr>
     
-    <div class="section">
-      <p style="text-align: center; color: #a8a8a8; font-size: 0.9rem; margin: 15px 0;">OU</p>
+    <div class="section" style="text-align: center;">
+      <p class="tagline">OU</p>
     </div>
     
     <div class="section">
       <h2>Entrar em Sala Existente</h2>
-      <p style="margin-bottom: 15px;">Introduz o código da sala partilhado por outro utilizador:</p>
-      <input type="text" id="codigo" placeholder="Código (ex: A1B2C3)" maxlength="6" autocomplete="off" style="text-transform: uppercase; text-align: center; font-size: 1.2rem; letter-spacing: 2px;">
-      <button onclick="entrarSala()" style="width: 100%;">⊙ Entrar na Sala ⊙</button>
+      <p style="margin-bottom: 15px; color: #4a5568;">Introduz o código da sala partilhado por outro utilizador:</p>
+      <div class="form-group">
+        <input type="text" id="codigo" placeholder="Exemplo: A1B2C3" maxlength="6" autocomplete="off" style="text-transform: uppercase; text-align: center; font-size: 1.1rem; letter-spacing: 1px;">
+      </div>
+      <button onclick="entrarSala()" style="width: 100%;">Entrar na Sala</button>
     </div>
     
     <hr>
     
-    <p class="tagline" style="text-align: center;">Liberdade de expressão sem limites • Privacidade total • Conversa efêmera</p>
+    <p class="tagline" style="text-align: center;">Privacidade Garantida • Comunicação Criptografada • Salas Temporárias</p>
   </div>
 
   <script>

@@ -3,80 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANARCROOM - Sala de Chat</title>
+  <title>Chat Corporativo - Sala</title>
   <link rel="stylesheet" href="anarcroom.css">
 </head>
 <body>
   <div class="container">
-    <div class="anarcho-logo">A</div>
-    
-    <h1>ANARCROOM</h1>
-    <p id="roomLabel" style="text-align: center; color: #ff6b6b; font-weight: 700; letter-spacing: 2px;"></p>
-    
-    <hr>
-    
-    <!-- SECÇÃO DE ENTRADA -->
-    <div id="joinSection" class="section">
-      <h2>Entrar na Sala</h2>
-      <div class="form-group">
-        <label for="user">Nome do Utilizador:</label>
-        <input type="text" id="user" placeholder="Introduz um pseudónimo" autocomplete="off">
+    <div class="header">
+      <div class="header-logo">
+        <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo">
       </div>
-      <button onclick="entrar()" style="width: 100%;">⊙ Entrar ⊙</button>
+      <h1>Chat Corporativo</h1>
+      <p id="roomLabel" class="tagline"></p>
     </div>
     
-    <!-- SECÇÃO DE CHAT -->
+    <div id="joinSection" class="section">
+      <h2>Bem-vindo à Sala</h2>
+      <div class="form-group">
+        <label for="user">Nome de Utilizador:</label>
+        <input type="text" id="user" placeholder="Insira seu nome" autocomplete="off" required>
+      </div>
+      <button onclick="entrar()" style="width: 100%;">Entrar na Sala</button>
+    </div>
+    
     <div id="chat" style="display: none;">
-      <h2 id="userGreeting"></h2>
-      
-      <hr>
+      <div class="status">
+        <span id="userDisplay"></span> | <span id="onlineCount">0</span> utilizadores online
+      </div>
       
       <div id="messages"></div>
       
-      <hr>
-      
-      <div class="form-group">
-        <label for="msg">Mensagem:</label>
-        <textarea id="msg" placeholder="Escreve a tua mensagem..." autocomplete="off"></textarea>
+      <div class="section">
+        <div class="form-group">
+          <label for="msg">Sua Mensagem:</label>
+          <div class="input-wrapper">
+            <input id="msg" type="text" placeholder="Escreva sua mensagem..." autocomplete="off" required>
+            <button onclick="enviar()">Enviar</button>
+          </div>
+        </div>
       </div>
       
-      <button onclick="enviar()" style="width: 100%; margin-bottom: 15px;">⊙ Enviar Mensagem ⊙</button>
-      
-      <div style="text-align: center;">
+      <div class="section" style="text-align: center;">
         <a href="index.html">← Voltar ao Início</a>
       </div>
     </div>
   </div>
 
   <script>
-    // LocalStorage-only chat (no Firebase)
+    // Chat em Tempo Real - Broadcast Channel API + localStorage
     const params = new URLSearchParams(window.location.search);
     const room = params.get('room') || 'default';
     document.getElementById('roomLabel').textContent = 'Sala: ' + room.toUpperCase();
 
     let username = '';
+    let bc = null;
+    let pollInterval = null;
 
-    function formatTime(timestamp) {
-      return new Date(timestamp).toLocaleTimeString('pt-PT', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        second: '2-digit'
-      });
+    // Broadcast Channel para tempo real entre abas
+    if (typeof BroadcastChannel !== 'undefined') {
+      bc = new BroadcastChannel('chat_room_' + room);
+      bc.onmessage = (event) => {
+        if (event.data.type === 'newMessage') {
+          loadMessages();
+          updateOnlineCount();
+        } else if (event.data.type === 'userJoined') {
+          updateOnlineCount();
+        }
+      };
     }
 
-    function storageKey(r){ return 'anarcroom_msgs_' + r; }
+    function formatTime(timestamp) {
+      const date = new Date(timestamp);
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+      return `${hours}:${minutes}:${seconds}`;
+    }
+
+    function storageKey(r) { return 'anarchroom_msgs_' + r; }
 
     function loadMessages() {
       const container = document.getElementById('messages');
-      container.innerHTML = '';
       const raw = localStorage.getItem(storageKey(room));
       let msgs = [];
       try { msgs = raw ? JSON.parse(raw) : []; } catch(e){ msgs = []; }
 
+      container.innerHTML = '';
+      
       if (!msgs.length) {
         const p = document.createElement('p');
         p.textContent = '(Sem mensagens ainda)';
-        p.style.color = '#666';
+        p.style.color = '#a0aec0';
         p.style.textAlign = 'center';
         p.style.fontStyle = 'italic';
         container.appendChild(p);
@@ -86,24 +102,72 @@
       msgs.sort((a,b)=> a.time - b.time).forEach(m => {
         const p = document.createElement('p');
         const t = formatTime(m.time);
-        const user_upper = (m.user||'anon').toUpperCase();
-        p.textContent = `[${t}] ${user_upper}: ${m.msg}`;
+        p.innerHTML = `<span class="message-time">[${t}]</span> <strong>${m.user}:</strong> ${m.msg}`;
         container.appendChild(p);
       });
       container.scrollTop = container.scrollHeight;
     }
 
+    function updateOnlineCount() {
+      const key = 'anarchroom_users_' + room;
+      const users = JSON.parse(localStorage.getItem(key) || '{}');
+      const now = Date.now();
+      const timeout = 45000;
+      
+      Object.keys(users).forEach(user => {
+        if(now - users[user] > timeout) {
+          delete users[user];
+        }
+      });
+      
+      localStorage.setItem(key, JSON.stringify(users));
+      document.getElementById('onlineCount').textContent = Object.keys(users).length;
+    }
+
+    function updateHeartbeat() {
+      if (username) {
+        const key = 'anarchroom_users_' + room;
+        const users = JSON.parse(localStorage.getItem(key) || '{}');
+        users[username] = Date.now();
+        localStorage.setItem(key, JSON.stringify(users));
+        updateOnlineCount();
+        
+        if (bc) {
+          bc.postMessage({ type: 'heartbeat', user: username });
+        }
+      }
+    }
+
     window.entrar = function() {
       username = document.getElementById('user').value.trim();
       if (!username) {
-        alert('Por favor, introduz um nome de utilizador');
+        alert('Por favor, insira um nome de utilizador');
         return;
       }
 
+      const key = 'anarchroom_users_' + room;
+      const users = JSON.parse(localStorage.getItem(key) || '{}');
+      users[username] = Date.now();
+      localStorage.setItem(key, JSON.stringify(users));
+
       document.getElementById('joinSection').style.display = 'none';
       document.getElementById('chat').style.display = 'block';
-      document.getElementById('userGreeting').textContent = 'Bem-vindo, ' + username.toUpperCase();
+      document.getElementById('userDisplay').textContent = '👤 ' + username;
+      
       loadMessages();
+      updateOnlineCount();
+
+      if (bc) {
+        bc.postMessage({ type: 'userJoined', user: username });
+      }
+      
+      pollInterval = setInterval(() => {
+        updateHeartbeat();
+        loadMessages();
+      }, 800);
+      
+      setInterval(updateHeartbeat, 10000);
+
       document.getElementById('msg').focus();
     };
 
@@ -115,20 +179,54 @@
       let msgs = [];
       try { msgs = raw ? JSON.parse(raw) : []; } catch(e){ msgs = []; }
 
-      msgs.push({ user: username, msg: txt, time: Date.now() });
-      try { localStorage.setItem(storageKey(room), JSON.stringify(msgs)); } catch(e){ alert('Erro ao gravar localStorage: ' + e.message); }
+      const newMsg = { user: username, msg: txt, time: Date.now() };
+      msgs.push(newMsg);
+      
+      try { 
+        localStorage.setItem(storageKey(room), JSON.stringify(msgs)); 
+      } catch(e){ 
+        alert('Erro ao gravar: ' + e.message); 
+        return;
+      }
+
+      if (bc) {
+        bc.postMessage({ type: 'newMessage', room: room, message: newMsg });
+      }
 
       document.getElementById('msg').value = '';
       loadMessages();
       document.getElementById('msg').focus();
     };
 
-    // Enviar ao pressionar Ctrl+Enter
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && document.activeElement.id === 'msg') {
+      if (e.key === 'Enter' && document.activeElement.id === 'msg') {
+        e.preventDefault();
         enviar();
       }
     });
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'anarchroom_msgs_' + room || e.key === 'anarchroom_users_' + room) {
+        loadMessages();
+        updateOnlineCount();
+      }
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if(username) {
+        const key = 'anarchroom_users_' + room;
+        const users = JSON.parse(localStorage.getItem(key) || '{}');
+        delete users[username];
+        localStorage.setItem(key, JSON.stringify(users));
+        if(bc) bc.close();
+      }
+      if(pollInterval) clearInterval(pollInterval);
+    });
+
+    pollInterval = setInterval(() => {
+      loadMessages();
+      updateOnlineCount();
+    }, 1000);
   </script>
 </body>
 </html>

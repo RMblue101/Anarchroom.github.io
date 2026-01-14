@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Profissional - Sala {{ codigo }}</title>
-    <link rel="stylesheet" href="anarcroom.css">
+    <title>Chat Profissional - Sala</title>
+    <link rel="stylesheet" href="anarcroom.css?v=1">
     <style>
         * {
             margin: 0;
@@ -14,7 +14,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            background: linear-gradient(135deg, #f0f2f5 0%, #e5e9f0 100%);
             min-height: 100vh;
             padding: 20px;
             color: #2c3e50;
@@ -25,12 +25,12 @@
             margin: 0 auto;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(26, 58, 82, 0.08);
             overflow: hidden;
         }
 
         .header {
-            background: linear-gradient(135deg, #4a5f7f 0%, #3d4d66 100%);
+            background: linear-gradient(135deg, #2b5a8c 0%, #1a3a52 100%);
             padding: 30px 20px;
             text-align: center;
             color: white;
@@ -46,6 +46,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         .header-logo img {
@@ -80,7 +81,7 @@
         .section h2 {
             font-size: 20px;
             font-weight: 600;
-            color: #2c3e50;
+            color: #1a3a52;
             margin-bottom: 20px;
         }
 
@@ -99,7 +100,7 @@
         .form-group input {
             width: 100%;
             padding: 12px 15px;
-            border: 2px solid #ecf0f1;
+            border: 2px solid #e5e9f0;
             border-radius: 8px;
             font-size: 14px;
             transition: all 0.3s ease;
@@ -108,14 +109,14 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #4a5f7f;
-            background-color: #f8f9fa;
+            border-color: #2b5a8c;
+            background-color: #f7fafd;
         }
 
         button {
             width: 100%;
             padding: 12px 20px;
-            background: linear-gradient(135deg, #4a5f7f 0%, #3d4d66 100%);
+            background: linear-gradient(135deg, #2b5a8c 0%, #1a3a52 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -129,7 +130,7 @@
 
         button:hover {
             transform: translateY(-2px);
-            background: linear-gradient(135deg, #556b8f 0%, #475d74 100%);
+            background: linear-gradient(135deg, #3a6fa1 0%, #2b5a8c 100%);
         }
 
         button:active {
@@ -137,13 +138,13 @@
         }
 
         #messages {
-            background: #f8f9fa;
+            background: #f7f9fc;
             border-radius: 8px;
             padding: 20px;
             height: 300px;
             overflow-y: auto;
             margin-bottom: 20px;
-            border: 1px solid #ecf0f1;
+            border: 1px solid #cbd5e0;
         }
 
         #messages p {
@@ -160,12 +161,12 @@
         }
 
         #messages p strong {
-            color: #4a5f7f;
+            color: #2b5a8c;
             font-weight: 600;
         }
 
         .message-time {
-            color: #95a5a6;
+            color: #718096;
             font-size: 12px;
             margin-right: 8px;
         }
@@ -173,7 +174,7 @@
         #userName {
             font-size: 18px;
             font-weight: 600;
-            color: #4a5f7f;
+            color: #2b5a8c;
             margin-bottom: 10px;
         }
 
@@ -189,7 +190,7 @@
             width: 100%;
             padding: 12px;
             text-align: center;
-            background: linear-gradient(135deg, #4a5f7f 0%, #3d4d66 100%);
+            background: linear-gradient(135deg, #2b5a8c 0%, #1a3a52 100%);
             color: white;
             text-decoration: none;
             border-radius: 8px;
@@ -200,7 +201,7 @@
 
         .exit-link:hover {
             transform: translateY(-2px);
-            background: linear-gradient(135deg, #556b8f 0%, #475d74 100%);
+            background: linear-gradient(135deg, #3a6fa1 0%, #2b5a8c 100%);
         }
 
         hr {
@@ -254,23 +255,22 @@
             }
         }
 
-        /* Scrollbar styling */
         #messages::-webkit-scrollbar {
             width: 8px;
         }
 
         #messages::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #edf2f7;
             border-radius: 4px;
         }
 
         #messages::-webkit-scrollbar-thumb {
-            background: #bdc3c7;
+            background: #cbd5e0;
             border-radius: 4px;
         }
 
         #messages::-webkit-scrollbar-thumb:hover {
-            background: #95a5a6;
+            background: #a0aec0;
         }
     </style>
 </head>
@@ -284,7 +284,6 @@
             <p class="tagline">Sala: <span id="roomCode">{{ codigo }}</span></p>
         </div>
         
-        <!-- JOIN SECTION -->
         <div class="section" id="joinSection">
             <h2>Bem-vindo à Sala</h2>
             <div class="form-group">
@@ -294,10 +293,9 @@
             <button onclick="entrar()">Entrar na Sala</button>
         </div>
         
-        <!-- MESSAGES SECTION -->
         <div class="section" id="messagesSection" style="display: none;">
             <h3 id="userName"></h3>
-            <p class="tagline" id="connStatus">Ligado à sala</p>
+            <p class="tagline" id="connStatus">Ligado à sala em tempo real</p>
             
             <div id="messages"></div>
             
@@ -311,25 +309,36 @@
         </div>
         
         <div class="section" id="exitSection" style="display: none;">
-            <p class="tagline">✓ Comunicação segura e privada</p>
+            <p class="tagline">✓ Comunicação segura e privada em tempo real</p>
             <a href="index.html" class="exit-link">← Sair da Sala</a>
         </div>
     </div>
 
     <script>
-    // Client-only chat using localStorage to keep messages per-room.
     const params = new URLSearchParams(window.location.search);
-    const roomParam = params.get('room');
-    const roomCode = roomParam || '{{ codigo }}' || 'default';
+    const roomCode = params.get('room') || '{{ codigo }}' || 'default';
     document.getElementById('roomCode').textContent = roomCode;
 
     let username = '';
+    let bc = null;
+    let pollInterval = null;
+
+    // Broadcast Channel para tempo real entre abas
+    if (typeof BroadcastChannel !== 'undefined') {
+      bc = new BroadcastChannel('chat_room_' + roomCode);
+      bc.onmessage = (event) => {
+        if (event.data.type === 'newMessage') {
+          loadMessages();
+        }
+      };
+    }
 
     function formatMessage(user, msg, time) {
         const date = new Date(time);
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
-        const timeStr = `${hours}:${minutes}`;
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        const timeStr = `${hours}:${minutes}:${seconds}`;
         return `<span class="message-time">[${timeStr}]</span> <strong>${user}:</strong> ${msg}`;
     }
 
@@ -338,6 +347,16 @@
         const arr = JSON.parse(localStorage.getItem(key) || '[]');
         const div = document.getElementById('messages');
         div.innerHTML = '';
+        
+        if (!arr.length) {
+          const p = document.createElement('p');
+          p.textContent = '(Sem mensagens ainda)';
+          p.style.textAlign = 'center';
+          p.style.color = '#95a5a6';
+          div.appendChild(p);
+          return;
+        }
+        
         arr.forEach(m => {
             const p = document.createElement('p');
             p.innerHTML = formatMessage(m.user, m.msg, m.time);
@@ -357,6 +376,14 @@
         document.getElementById('exitSection').style.display = 'block';
         document.getElementById('userName').textContent = '👤 ' + username + ' ligado';
         loadMessages();
+        
+        // Inicia polling rápido para tempo real
+        pollInterval = setInterval(loadMessages, 600);
+        
+        if (bc) {
+          bc.postMessage({ type: 'userJoined', user: username });
+        }
+        
         document.getElementById('msg').focus();
     }
 
@@ -365,8 +392,15 @@
         if(!txt) return;
         const key = 'chatroom_msgs_' + roomCode;
         const arr = JSON.parse(localStorage.getItem(key) || '[]');
-        arr.push({ user: username, msg: txt, time: Date.now() });
+        const newMsg = { user: username, msg: txt, time: Date.now() };
+        arr.push(newMsg);
         localStorage.setItem(key, JSON.stringify(arr));
+        
+        // Broadcast para outras abas
+        if (bc) {
+          bc.postMessage({ type: 'newMessage', message: newMsg });
+        }
+        
         document.getElementById('msg').value = '';
         loadMessages();
         document.getElementById('msg').focus();
@@ -377,6 +411,18 @@
             e.preventDefault();
             enviar();
         }
+    });
+
+    // Monitorar alterações do localStorage de outras abas
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'chatroom_msgs_' + roomCode) {
+        loadMessages();
+      }
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if(bc) bc.close();
+      if(pollInterval) clearInterval(pollInterval);
     });
     </script>
 </body>

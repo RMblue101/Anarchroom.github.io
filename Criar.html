@@ -51,7 +51,7 @@ const codigo = gerarCodigo();
 
 document.getElementById('codigoSala').textContent = codigo;
 document.getElementById('linkSala').textContent =
-  `chat_novo.html?room=${codigo}`;
+  `chat.html?room=${codigo}`;
 
 function entrarSala() {
   window.location.href = `chat.html?room=${codigo}`;

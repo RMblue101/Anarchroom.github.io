@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anarchroom - Chat</title>
   <link rel="stylesheet" href="anarcroom.css">
-  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+	<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -55,33 +55,15 @@
 	const room = params.get('room') || 'default';
 	document.getElementById('roomLabel').textContent = 'Sala: ' + room.toUpperCase();
 
-	// SUBSTITUIR por URL pública após deploy (ex.: https://seu-anarchroom.onrender.com)
-	const SERVER_URL = 'https://SEU_SERVIDOR_PUBLICO';
+		// SERVER_URL resolution:
+		// - If URL contains `?server=https://...` use that
+		// - If running on localhost default to http://localhost:3000
+		// - Otherwise null (frontend will instruct how to provide server URL on GitHub Pages)
+		const _params = new URLSearchParams(window.location.search);
+		const _queryServer = _params.get('server');
+		const SERVER_URL = _queryServer || ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? 'http://localhost:3000' : null);
 
-	// aviso visível no frontend enquanto não substituir a URL pública
-	if (SERVER_URL.includes('SEU_SERVIDOR_PUBLICO')) {
-	  const warn = document.createElement('div');
-	  warn.style.position = 'fixed';
-	  warn.style.left = '0';
-	  warn.style.right = '0';
-	  warn.style.top = '0';
-	  warn.style.background = '#ffeeba';
-	  warn.style.color = '#856404';
-	  warn.style.padding = '10px';
-	  warn.style.textAlign = 'center';
-	  warn.style.zIndex = '9999';
-	  warn.innerHTML = 'ATENÇÃO: substitua SERVER_URL em templates/chat.html pela URL pública do servidor (Render/Railway/Fly). Sem isso o chat NÃO funciona pela Internet.<br>Passos: deploy server → copie a URL HTTPS → edite este ficheiro e substitua o placeholder.';
-	  document.body.appendChild(warn);
-	  document.body.style.paddingTop = '56px';
-
-	  // desactivar inputs/botões para evitar testes inválidos no Pages
-	  const joinBtn = document.querySelector('#joinSection button');
-	  if (joinBtn) joinBtn.disabled = true;
-	  const userInput = document.getElementById('user');
-	  if (userInput) userInput.disabled = true;
-	}
-
-	let socket = null;
+		let socket = null;
 	let username = '';
 
 	function formatTime(timestamp) {
@@ -93,6 +75,7 @@
 	}
 
 	function conectarSocket() {
+	  if (!SERVER_URL) { console.warn('SERVER_URL não definido — forneça ?server=https://seu-servidor'); return; }
 	  socket = io(SERVER_URL, { transports: ['websocket','polling'] });
 	  socket.on('connect', () => console.log('Ligado ao servidor'));
 	  socket.on('carregarMensagens', (arr) => {
@@ -114,14 +97,15 @@
 	  container.scrollTop = container.scrollHeight;
 	}
 
-	window.entrar = function() {
-	  if (SERVER_URL.includes('SEU_SERVIDOR_PUBLICO')) {
-	    alert('O servidor ainda não está configurado. Substitua SERVER_URL em templates/chat.html pela URL pública do servidor e faça deploy.');
-	    return;
-	  }
 
-	  username = document.getElementById('user').value.trim();
-	  if (!username) { alert('Escolha um nome!'); return; }
+	window.entrar = function() {
+		if (!SERVER_URL) {
+			alert('Servidor não configurado. Em GitHub Pages use ?server=https://SEU_SERVIDOR_PUBLICO no URL (ex.: chat.html?room=test&server=https://meu-servidor.com)');
+			return;
+		}
+
+		username = document.getElementById('user').value.trim();
+		if (!username) { alert('Escolha um nome!'); return; }
 
 	  document.getElementById('joinSection').style.display = 'none';
 	  document.getElementById('chat').style.display = 'block';
@@ -133,14 +117,14 @@
 	  setInterval(() => { if (socket && socket.connected) socket.emit('heartbeat', { room, user: username }); }, 10000);
 	};
 
-	window.enviar = function() {
-	  if (SERVER_URL.includes('SEU_SERVIDOR_PUBLICO')) { alert('Servidor não configurado.'); return; }
-	  const txtEl = document.getElementById('msg');
-	  const txt = txtEl.value.trim();
-	  if (!txt || !socket) return;
-	  socket.emit('enviarMensagem', { room, user: username, msg: txt, time: Date.now() });
-	  txtEl.value = '';
-	};
+		window.enviar = function() {
+		  if (!SERVER_URL) { alert('Servidor não configurado.'); return; }
+		  const txtEl = document.getElementById('msg');
+		  const txt = txtEl.value.trim();
+		  if (!txt || !socket) return;
+		  socket.emit('enviarMensagem', { room, user: username, msg: txt, time: Date.now() });
+		  txtEl.value = '';
+		};
 
 	window.addEventListener('beforeunload', () => {
 	  if (socket && socket.connected) socket.emit('sairSala', { room, user: username });

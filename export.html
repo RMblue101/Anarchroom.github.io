@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Anarchroom - Exportar Conversa</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;padding:20px}
+    .container{max-width:720px;margin:0 auto}
+    .form-group{margin-bottom:12px}
+    label{display:block;margin-bottom:6px}
+    input,button{padding:8px;font-size:14px}
+    #log{white-space:pre-wrap;background:#f7f7f7;padding:10px;border:1px solid #ddd;height:220px;overflow:auto}
+    .hidden{display:none}
+  </style>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Exportar Conversa (PDF)</h1>
+    <div class="form-group">
+      <label for="room">Sala</label>
+      <input id="room" placeholder="nome da sala (ex: default)" value="default">
+    </div>
+    <div class="form-group">
+      <label for="user">O seu nome</label>
+      <input id="user" placeholder="seu nome" value="Usuario">
+    </div>
+    <div class="form-group">
+      <label for="server">Server (opcional; se vazio usa localhost)</label>
+      <input id="server" placeholder="https://seu-servidor.com" >
+    </div>
+    <div class="form-group">
+      <button id="joinBtn">Entrar</button>
+      <button id="exportBtn" disabled>Exportar para PDF</button>
+    </div>
+
+    <h3>Log</h3>
+    <div id="log">(Nenhuma ação ainda)</div>
+  </div>
+
+<script>
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const roomEl = document.getElementById('room');
+  const userEl = document.getElementById('user');
+  const serverEl = document.getElementById('server');
+  const joinBtn = document.getElementById('joinBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const logEl = document.getElementById('log');
+
+  const serverFromQS = params.get('server');
+  if (serverFromQS) serverEl.value = serverFromQS;
+
+  function log(s){ logEl.textContent = (new Date()).toLocaleTimeString() + ' - ' + s + '\n' + logEl.textContent; }
+
+  let socket = null;
+  let joined = false;
+  let username = '';
+  let room = '';
+
+  function connect() {
+    const server = serverEl.value.trim() || ((location.hostname==='localhost' || location.hostname==='127.0.0.1')? 'http://localhost:3000' : null);
+    if (!server) { alert('Forneça o server via input ou ?server= na URL'); return; }
+    socket = io(server, { transports:['websocket','polling'] });
+
+    socket.on('connect', ()=>{ log('Ligado ao servidor: ' + socket.id); });
+    socket.on('carregarMensagens', (arr)=>{ log('Mensagens carregadas: '+ (arr?arr.length:0)); });
+    socket.on('exportRequest', ({ requestId, room, requester })=>{
+      // prompt user to allow export
+      const allow = confirm(`Pedido de exportação da sala "${room}" feito por ${requester}. Permite exportar a conversa para PDF?`);
+      socket.emit('exportResponse', { requestId, user: username, approve: !!allow });
+      log((allow? 'Aprovou ':'Negou ') + ' exportRequest ' + requestId + ' de ' + requester);
+    });
+
+    socket.on('exportDenied', ({ requestId, by, reason })=>{
+      if (reason === 'timeout') log('Exportação negada por timeout para pedido ' + requestId);
+      else log('Exportação negada por ' + (by||'alguém') + ' para pedido ' + requestId);
+      alert('Exportação negada.');
+      exportBtn.disabled = false;
+    });
+
+    socket.on('exportApproved', ({ requestId, messages })=>{
+      log('Exportação aprovada — recebendo mensagens: ' + (messages?messages.length:0));
+      // gerar PDF com jspdf
+      try{
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const title = `Conversa_${room}_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}`;
+        doc.setFontSize(14);
+        doc.text('Conversa — Sala: ' + room, 10, 14);
+        doc.setFontSize(10);
+        let y = 24;
+        const lineHeight = 6;
+        messages.forEach(m => {
+          const time = new Date(m.time).toLocaleString();
+          const text = `[${time}] ${m.user}: ${m.msg}`;
+          const split = doc.splitTextToSize(text, 180);
+          split.forEach(line => {
+            if (y > 280) { doc.addPage(); y = 20; }
+            doc.text(line, 10, y);
+            y += lineHeight;
+          });
+        });
+        doc.save(title + '.pdf');
+        log('PDF gerado: ' + title + '.pdf');
+      } catch (e) {
+        console.error(e); log('Erro ao gerar PDF: ' + e.message); alert('Erro ao gerar PDF');
+      }
+      exportBtn.disabled = false;
+    });
+
+    socket.on('exportError', (err)=>{ log('Export error: '+err); alert('Erro: '+err); exportBtn.disabled = false; });
+
+    socket.on('disconnect', ()=>{ log('Desligado do servidor'); });
+  }
+
+  joinBtn.addEventListener('click', ()=>{
+    if (joined) return;
+    username = userEl.value.trim();
+    room = roomEl.value.trim() || 'default';
+    if (!username) { alert('Escolha um nome'); return; }
+    connect();
+    // wait until socket connects then join
+    const waitConnect = setInterval(()=>{
+      if (socket && socket.connected) {
+        clearInterval(waitConnect);
+        socket.emit('entrarSala', { room, user: username });
+        joined = true;
+        exportBtn.disabled = false;
+        log('Entrou na sala ' + room + ' como ' + username);
+      }
+    }, 150);
+  });
+
+  exportBtn.addEventListener('click', ()=>{
+    if (!joined) { alert('Entre primeiro na sala.'); return; }
+    exportBtn.disabled = true;
+    log('Iniciando pedido de exportação...');
+    socket.emit('requestExport', { room, user: username });
+  });
+
+})();
+</script>
+</body>
+</html>

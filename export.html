@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Anarchroom — Exportar Conversa</title>
+
+  <link rel="stylesheet" href="anarcroom.css">
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="header-logo">
+      <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo Anarchroom">
+    </div>
+    <h1>⚡ ANARCHROOM ⚡</h1>
+    <p class="tagline">Exportar Conversa</p>
+  </div>
+
+  <div class="section">
+    <div class="form-group">
+      <label for="user">O seu nome</label>
+      <input id="user" placeholder="Seu nome" value="Usuario">
+    </div>
+
+    <div class="form-group">
+      <label for="conversation">Conversa</label>
+      <textarea id="conversation" placeholder="Cole aqui a conversa..."></textarea>
+    </div>
+
+    <button id="exportBtn">Exportar para PDF</button>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const userEl = document.getElementById('user');
+  const convoEl = document.getElementById('conversation');
+  const exportBtn = document.getElementById('exportBtn');
+
+  exportBtn.addEventListener('click', ()=>{
+    const username = userEl.value.trim();
+    const text = convoEl.value.trim();
+
+    if (!username || !text) {
+      alert('Preencha o nome e a conversa.');
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(14);
+    doc.text('Conversa — Anarchroom', 10, 14);
+
+    doc.setFontSize(10);
+    doc.text('Utilizador: ' + username, 10, 22);
+
+    let y = 32;
+    const lines = doc.splitTextToSize(text, 180);
+
+    lines.forEach(line => {
+      if (y > 280) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(line, 10, y);
+      y += 6;
+    });
+
+    const filename =
+      `Anarchroom_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.pdf`;
+
+    doc.save(filename);
+  });
+})();
+</script>
+
+</body>
+</html>

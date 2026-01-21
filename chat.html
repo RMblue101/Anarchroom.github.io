@@ -5,130 +5,102 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anarchroom - Chat</title>
   <link rel="stylesheet" href="anarcroom.css">
-	<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="header-logo">
-        <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo Anarchroom">
-      </div>
-      <h1>⚡ ANARCHROOM ⚡</h1>
-      <p id="roomLabel" class="tagline"></p>
-    </div>
-    
-    <div id="joinSection" class="section">
-      <h2>Entrar na Sala</h2>
-      <div class="form-group">
-        <label for="user">Seu Nome:</label>
-        <input type="text" id="user" placeholder="Escolha um nome" autocomplete="off" required>
-      </div>
 
-      <button onclick="entrar()" style="width: 100%;">⊙ Entrar ⊙</button>
+<div class="container">
+
+  <div class="header">
+    <div class="header-logo">
+      <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo Anarchroom">
     </div>
-    
-    <div id="chat" style="display: none;">
-      <div class="status">
-        <span id="userDisplay"></span> • <span id="onlineCount">0</span> pessoas aqui
-      </div>
-      
-      <div id="messages"></div>
-      
-      <div class="section">
-        <div class="form-group">
-          <label for="msg">Mensagem:</label>
-          <div class="input-wrapper">
-            <input id="msg" type="text" placeholder="Escreva aqui…" autocomplete="off" required>
-            <button onclick="enviar()">⊙ Enviar ⊙</button>
-          </div>
-        </div>
-      </div>
-      
-      <div class="section" style="text-align: center;">
-        <a href="index.html">← Sair</a>
-      </div>
-    </div>
+    <h1>⚡ ANARCHROOM ⚡</h1>
+    <p class="tagline">Chat Livre • Anónimo • Sem Registo</p>
   </div>
 
-  <script>
-	const params = new URLSearchParams(window.location.search);
-	const room = params.get('room') || 'default';
-	document.getElementById('roomLabel').textContent = 'Sala: ' + room.toUpperCase();
+  <!-- ENTRAR -->
+  <div id="joinSection" class="section">
+    <h2>Entrar</h2>
 
-		// SERVER_URL resolution:
-		// - If URL contains `?server=https://...` use that
-		// - If running on localhost default to http://localhost:3000
-		// - Otherwise null (frontend will instruct how to provide server URL on GitHub Pages)
-		const _params = new URLSearchParams(window.location.search);
-		const _queryServer = _params.get('server');
-		const SERVER_URL = _queryServer || ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? 'http://localhost:3000' : null);
+    <div class="form-group">
+      <label for="user">Seu nome</label>
+      <input type="text" id="user" placeholder="Escolha um nome" autocomplete="off">
+    </div>
 
-		let socket = null;
-	let username = '';
+    <button onclick="entrar()" style="width:100%;">⊙ Entrar ⊙</button>
+  </div>
 
-	function formatTime(timestamp) {
-	  const date = new Date(timestamp);
-	  const hours = String(date.getHours()).padStart(2, '0');
-	  const minutes = String(date.getMinutes()).padStart(2, '0');
-	  const seconds = String(date.getSeconds()).padStart(2, '0');
-	  return `${hours}:${minutes}:${seconds}`;
-	}
+  <!-- CHAT -->
+  <div id="chat" style="display:none;">
 
-	function conectarSocket() {
-	  if (!SERVER_URL) { console.warn('SERVER_URL não definido — forneça ?server=https://seu-servidor'); return; }
-	  socket = io(SERVER_URL, { transports: ['websocket','polling'] });
-	  socket.on('connect', () => console.log('Ligado ao servidor'));
-	  socket.on('carregarMensagens', (arr) => {
-	    const container = document.getElementById('messages');
-	    container.innerHTML = '';
-	    if (!arr || !arr.length) { container.innerHTML = '<p style="color:#666;text-align:center;">(Nenhuma mensagem ainda)</p>'; return; }
-	    arr.forEach(m => adicionarMensagem(m.user, m.msg, m.time));
-	  });
-	  socket.on('mensagem', (m) => adicionarMensagem(m.user, m.msg, m.time));
-	  socket.on('atualizarOnline', (count) => { document.getElementById('onlineCount').textContent = count; });
-	}
+    <div class="status">
+      <span id="userDisplay"></span>
+    </div>
 
-	function adicionarMensagem(user, msg, time) {
-	  const container = document.getElementById('messages');
-	  if (container.innerHTML.includes('Nenhuma mensagem ainda')) container.innerHTML = '';
-	  const p = document.createElement('p');
-	  p.innerHTML = `<span class="message-time">[${formatTime(time)}]</span> <strong>${user}:</strong> ${msg}`;
-	  container.appendChild(p);
-	  container.scrollTop = container.scrollHeight;
-	}
+    <div id="messages"></div>
 
+    <div class="section">
+      <div class="form-group">
+        <label for="msg">Mensagem</label>
+        <div class="input-wrapper">
+          <input id="msg" type="text" placeholder="Escreva aqui…" autocomplete="off">
+          <button onclick="enviar()">⊙ Enviar ⊙</button>
+        </div>
+      </div>
+    </div>
 
-	window.entrar = function() {
-		if (!SERVER_URL) {
-			alert('Servidor não configurado. Em GitHub Pages use ?server=https://SEU_SERVIDOR_PUBLICO no URL (ex.: chat.html?room=test&server=https://meu-servidor.com)');
-			return;
-		}
+    <div class="section" style="text-align:center;">
+      <a href="index.html">← Sair</a>
+    </div>
 
-		username = document.getElementById('user').value.trim();
-		if (!username) { alert('Escolha um nome!'); return; }
+  </div>
 
-	  document.getElementById('joinSection').style.display = 'none';
-	  document.getElementById('chat').style.display = 'block';
-	  document.getElementById('userDisplay').textContent = '👤 ' + username;
+</div>
 
-	  conectarSocket();
-	  socket.emit('entrarSala', { room, user: username });
+<script>
+let username = '';
 
-	  setInterval(() => { if (socket && socket.connected) socket.emit('heartbeat', { room, user: username }); }, 10000);
-	};
+function formatTime() {
+  const d = new Date();
+  return d.toLocaleTimeString();
+}
 
-		window.enviar = function() {
-		  if (!SERVER_URL) { alert('Servidor não configurado.'); return; }
-		  const txtEl = document.getElementById('msg');
-		  const txt = txtEl.value.trim();
-		  if (!txt || !socket) return;
-		  socket.emit('enviarMensagem', { room, user: username, msg: txt, time: Date.now() });
-		  txtEl.value = '';
-		};
+function adicionarMensagem(user, msg) {
+  const container = document.getElementById('messages');
+  const p = document.createElement('p');
+  p.innerHTML = `<span class="message-time">[${formatTime()}]</span> <strong>${user}:</strong> ${msg}`;
+  container.appendChild(p);
+  container.scrollTop = container.scrollHeight;
+}
 
-	window.addEventListener('beforeunload', () => {
-	  if (socket && socket.connected) socket.emit('sairSala', { room, user: username });
-	});
-  </script>
+function entrar() {
+  const input = document.getElementById('user');
+  username = input.value.trim();
+  if (!username) {
+    alert('Escolha um nome!');
+    return;
+  }
+
+  document.getElementById('joinSection').style.display = 'none';
+  document.getElementById('chat').style.display = 'block';
+  document.getElementById('userDisplay').textContent = '👤 ' + username;
+
+  adicionarMensagem('Sistema', `${username} entrou no chat`);
+}
+
+function enviar() {
+  const msgEl = document.getElementById('msg');
+  const msg = msgEl.value.trim();
+  if (!msg) return;
+
+  adicionarMensagem(username, msg);
+  msgEl.value = '';
+}
+
+document.getElementById('msg').addEventListener('keydown', e => {
+  if (e.key === 'Enter') enviar();
+});
+</script>
+
 </body>
 </html>

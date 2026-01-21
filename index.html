@@ -7,75 +7,54 @@
   <link rel="stylesheet" href="anarcroom.css">
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="header-logo">
-        <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo Anarchroom">
-      </div>
-      <h1>⚡ ANARCHROOM ⚡</h1>
-      <p class="tagline">Chat Livre • Anónimo • Sem Registo</p>
+
+<div class="container">
+  <div class="header">
+    <div class="header-logo">
+      <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo Anarchroom">
     </div>
-    
-    <div class="section">
-      <p>Bem-vindo a <strong>Anarchroom</strong> — conversa livre, sem vigilância e sem guardar histórico.</p>
-      <p style="margin-top: 12px; font-size: 0.9rem; color: #4a5568;">⊙ Sem Registo • ⊙ Sem Vigilância • ⊙ Sem Histórico • ⊙ Conversa em Direto • ⊙ Livre</p>
-    </div>
-    
-    <hr>
-    
-    <div class="section">
-      <h2>⊙ Criar Sala Nova</h2>
-      <p style="margin-bottom: 15px; color: #4a5568;">Criar um código para partilhar com amigos:</p>
-      <button onclick="criarSalaAleatoria()" style="width: 100%;">⊙ Gerar Sala ⊙</button>
-    </div>
-    
-    <hr>
-    
-    <div class="section" style="text-align: center;">
-      <p class="tagline">OU</p>
-    </div>
-    
-    <div class="section">
-      <h2>⊙ Entrar numa Sala</h2>
-      <p style="margin-bottom: 15px; color: #4a5568;">Tem um código? Coloque aqui:</p>
-      <div class="form-group">
-        <input type="text" id="codigo" placeholder="Ex: A1B2C3" maxlength="6" autocomplete="off" style="text-transform: uppercase; text-align: center; font-size: 1.1rem; letter-spacing: 1px;">
-      </div>
-      <button onclick="entrarSala()" style="width: 100%;">⊙ Entrar ⊙</button>
-    </div>
-    
-    <hr>
-    
-    <p class="tagline" style="text-align: center;">Liberdade • Privacidade • Sem Censura</p>
+    <h1>⚡ ANARCHROOM ⚡</h1>
+    <p class="tagline">Chat Livre • Anónimo • Sem Registo</p>
   </div>
 
-  <script>
-    function gerarCodigoAleatorio() {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let codigo = '';
-      for (let i = 0; i < 6; i++) {
-        codigo += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return codigo;
-    }
+  <div class="section">
+    <p>
+      Bem-vindo a <strong>Anarchroom</strong> — um conceito de comunicação livre,
+      focado em privacidade, anonimato e autonomia do utilizador.
+    </p>
+    <p style="margin-top: 12px; font-size: 0.9rem; color: #4a5568;">
+      Sem Registo • Sem Vigilância • Sem Histórico • Livre
+    </p>
+  </div>
 
-    function criarSalaAleatoria() {
-      const codigo = gerarCodigoAleatorio();
-      window.location.href = `chat.html?room=${codigo}`;
-    }
+  <hr>
 
-    function entrarSala() {
-      const codigo = document.getElementById("codigo").value.trim().toUpperCase();
-      if (!codigo || codigo.length !== 6) {
-        alert("O código tem que ter 6 letras ou números!");
-        return;
-      }
-      window.location.href = `chat.html?room=${codigo}`;
-    }
+  <div class="section">
+    <h2>⊙ Sobre o Projeto</h2>
+    <p style="color:#4a5568;">
+      Esta é uma versão <strong>local e estática</strong> da interface Anarchroom.
+      Não existem servidores, salas, armazenamento de mensagens ou ligação externa.
+    </p>
+  </div>
 
-    document.getElementById("codigo").addEventListener("keydown", function(e) {
-      if (e.key === "Enter") entrarSala();
-    });
-  </script>
+  <hr>
+
+  <div class="section">
+    <h2>⊙ Princípios</h2>
+    <ul style="color:#4a5568; line-height:1.6;">
+      <li>Liberdade de expressão</li>
+      <li>Privacidade por padrão</li>
+      <li>Sem recolha de dados</li>
+      <li>Sem contas ou registos</li>
+    </ul>
+  </div>
+
+  <hr>
+
+  <p class="tagline" style="text-align:center;">
+    Liberdade • Privacidade • Autonomia
+  </p>
+</div>
+
 </body>
 </html>

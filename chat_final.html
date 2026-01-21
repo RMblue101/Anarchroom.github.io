@@ -3,23 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Profissional - Sala</title>
-    <link rel="stylesheet" href="anarcroom.css?v=1">
+    <title>Anarchroom - Chat</title>
+    <link rel="stylesheet" href="anarcroom.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             background: linear-gradient(135deg, #f0f2f5 0%, #e5e9f0 100%);
             min-height: 100vh;
             padding: 20px;
             color: #2c3e50;
         }
-
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -28,91 +22,35 @@
             box-shadow: 0 2px 8px rgba(26, 58, 82, 0.08);
             overflow: hidden;
         }
-
         .header {
             background: linear-gradient(135deg, #2b5a8c 0%, #1a3a52 100%);
             padding: 30px 20px;
             text-align: center;
             color: white;
         }
-
         .header-logo {
             width: 80px;
             height: 80px;
             margin: 0 auto 15px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
         }
-
         .header-logo img {
             width: 100%;
             height: 100%;
             border-radius: 12px;
             object-fit: cover;
         }
-
-        .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-
-        .header .tagline {
-            font-size: 14px;
-            opacity: 0.95;
-            font-weight: 500;
-        }
-
-        .section {
-            padding: 30px 25px;
-            border-bottom: 1px solid #ecf0f1;
-        }
-
-        .section:last-child {
-            border-bottom: none;
-        }
-
-        .section h2 {
-            font-size: 20px;
-            font-weight: 600;
-            color: #1a3a52;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #34495e;
-            font-size: 14px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e5e9f0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #2b5a8c;
-            background-color: #f7fafd;
-        }
-
+        .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .header .tagline { font-size: 14px; opacity: 0.95; font-weight: 500; }
+        .section { padding: 30px 25px; border-bottom: 1px solid #ecf0f1; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #34495e; font-size: 14px; }
+        .form-group input { width: 100%; padding: 12px 15px; border: 2px solid #e5e9f0; border-radius: 8px; font-size: 14px; transition: all 0.3s ease; }
+        .form-group input:focus { outline: none; border-color: #2b5a8c; background-color: #f7fafd; }
         button {
             width: 100%;
             padding: 12px 20px;
@@ -127,16 +65,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
-        button:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, #3a6fa1 0%, #2b5a8c 100%);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
+        button:hover { transform: translateY(-2px); background: linear-gradient(135deg, #3a6fa1 0%, #2b5a8c 100%); }
         #messages {
             background: #f7f9fc;
             border-radius: 8px;
@@ -146,284 +75,93 @@
             margin-bottom: 20px;
             border: 1px solid #cbd5e0;
         }
-
-        #messages p {
-            padding: 10px 0;
-            font-size: 13px;
-            color: #2c3e50;
-            border-bottom: 1px solid #e8e8e8;
-            line-height: 1.5;
-            word-break: break-word;
-        }
-
-        #messages p:last-child {
-            border-bottom: none;
-        }
-
-        #messages p strong {
-            color: #2b5a8c;
-            font-weight: 600;
-        }
-
-        .message-time {
-            color: #718096;
-            font-size: 12px;
-            margin-right: 8px;
-        }
-
-        #userName {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2b5a8c;
-            margin-bottom: 10px;
-        }
-
-        .tagline {
-            font-size: 13px;
-            color: #7f8c8d;
-            font-style: italic;
-            margin-bottom: 15px;
-        }
-
-        .exit-link {
-            display: inline-block;
-            width: 100%;
-            padding: 12px;
-            text-align: center;
-            background: linear-gradient(135deg, #2b5a8c 0%, #1a3a52 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-        }
-
-        .exit-link:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, #3a6fa1 0%, #2b5a8c 100%);
-        }
-
-        hr {
-            display: none !important;
-        }
-
-        #messagesSection {
-            max-width: 100%;
-        }
-
-        .input-wrapper {
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-        }
-
-        .input-wrapper input {
-            flex: 1;
-        }
-
-        .input-wrapper button {
-            width: auto;
-            min-width: 120px;
-            margin: 0;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                border-radius: 8px;
-            }
-
-            .header {
-                padding: 20px 15px;
-            }
-
-            .header h1 {
-                font-size: 22px;
-            }
-
-            .header-logo {
-                width: 70px;
-                height: 70px;
-            }
-
-            .section {
-                padding: 20px 15px;
-            }
-
-            #messages {
-                height: 250px;
-            }
-        }
-
-        #messages::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #messages::-webkit-scrollbar-track {
-            background: #edf2f7;
-            border-radius: 4px;
-        }
-
-        #messages::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 4px;
-        }
-
-        #messages::-webkit-scrollbar-thumb:hover {
-            background: #a0aec0;
-        }
+        #messages p { padding: 10px 0; font-size: 13px; color: #2c3e50; border-bottom: 1px solid #e8e8e8; line-height: 1.5; word-break: break-word; }
+        #messages p:last-child { border-bottom: none; }
+        #messages p strong { color: #2b5a8c; font-weight: 600; }
+        .message-time { color: #718096; font-size: 12px; margin-right: 8px; }
+        .input-wrapper { display: flex; gap: 10px; align-items: flex-end; }
+        .input-wrapper input { flex: 1; }
+        .input-wrapper button { width: auto; min-width: 120px; }
     </style>
 </head>
 <body>
     <div class="container">
+
         <div class="header">
             <div class="header-logo">
-                <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo">
+                <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo Anarchroom">
             </div>
-            <h1>Chat Profissional</h1>
-            <p class="tagline">Sala: <span id="roomCode">{{ codigo }}</span></p>
+            <h1>⚡ ANARCHROOM ⚡</h1>
+            <p class="tagline">Chat Local • Sem servidor</p>
         </div>
-        
-        <div class="section" id="joinSection">
-            <h2>Bem-vindo à Sala</h2>
+
+        <div id="joinSection" class="section">
+            <h2>Bem-vindo</h2>
             <div class="form-group">
                 <label for="user">Nome de utilizador:</label>
-                <input id="user" type="text" placeholder="Introduza o seu nome" required>
+                <input id="user" type="text" placeholder="Escolha um nome">
             </div>
-            <button onclick="entrar()">Entrar na Sala</button>
+            <button onclick="entrar()">⊙ Entrar ⊙</button>
         </div>
-        
-        <div class="section" id="messagesSection" style="display: none;">
+
+        <div id="messagesSection" class="section" style="display:none;">
             <h3 id="userName"></h3>
-            <p class="tagline" id="connStatus">Ligado à sala em tempo real</p>
-            
             <div id="messages"></div>
-            
+
             <div class="form-group">
-                <label for="msg" style="display: none;">Mensagem:</label>
+                <label for="msg" style="display:none;">Mensagem</label>
                 <div class="input-wrapper">
-                    <input id="msg" type="text" placeholder="Escreva a sua mensagem aqui..." required>
-                    <button id="btnEnviar" onclick="enviar()" style="width: 100px;">Enviar</button>
+                    <input id="msg" type="text" placeholder="Escreva aqui…">
+                    <button onclick="enviar()">⊙ Enviar ⊙</button>
                 </div>
             </div>
+
+            <a href="index.html" class="exit-link" style="margin-top:15px; display:block; text-align:center;">← Voltar</a>
         </div>
-        
-        <div class="section" id="exitSection" style="display: none;">
-            <p class="tagline">✓ Comunicação segura e privada em tempo real</p>
-            <a href="index.html" class="exit-link">← Sair da Sala</a>
-        </div>
+
     </div>
 
     <script>
-    const params = new URLSearchParams(window.location.search);
-    const roomCode = params.get('room') || '{{ codigo }}' || 'default';
-    document.getElementById('roomCode').textContent = roomCode;
+        let username = '';
 
-    let username = '';
-    let bc = null;
-    let pollInterval = null;
-
-    // Broadcast Channel para tempo real entre abas
-    if (typeof BroadcastChannel !== 'undefined') {
-      bc = new BroadcastChannel('chat_room_' + roomCode);
-      bc.onmessage = (event) => {
-        if (event.data.type === 'newMessage') {
-          loadMessages();
+        function timeNow() {
+            return new Date().toLocaleTimeString();
         }
-      };
-    }
 
-    function formatMessage(user, msg, time) {
-        const date = new Date(time);
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        const timeStr = `${hours}:${minutes}:${seconds}`;
-        return `<span class="message-time">[${timeStr}]</span> <strong>${user}:</strong> ${msg}`;
-    }
-
-    function loadMessages(){
-        const key = 'chatroom_msgs_' + roomCode;
-        const arr = JSON.parse(localStorage.getItem(key) || '[]');
-        const div = document.getElementById('messages');
-        div.innerHTML = '';
-        
-        if (!arr.length) {
-          const p = document.createElement('p');
-          p.textContent = '(Sem mensagens ainda)';
-          p.style.textAlign = 'center';
-          p.style.color = '#95a5a6';
-          div.appendChild(p);
-          return;
-        }
-        
-        arr.forEach(m => {
+        function adicionarMensagem(user, msg) {
+            const container = document.getElementById('messages');
             const p = document.createElement('p');
-            p.innerHTML = formatMessage(m.user, m.msg, m.time);
-            div.appendChild(p);
+            p.innerHTML = `<span class="message-time">[${timeNow()}]</span> <strong>${user}:</strong> ${msg}`;
+            container.appendChild(p);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function entrar() {
+            const input = document.getElementById('user');
+            username = input.value.trim();
+            if (!username) { alert('Escolha um nome'); return; }
+            document.getElementById('joinSection').style.display = 'none';
+            document.getElementById('messagesSection').style.display = 'block';
+            document.getElementById('userName').textContent = '👤 ' + username + ' conectado';
+            adicionarMensagem('Sistema', `${username} entrou no chat`);
+            document.getElementById('msg').focus();
+        }
+
+        function enviar() {
+            const msgEl = document.getElementById('msg');
+            const msg = msgEl.value.trim();
+            if (!msg) return;
+            adicionarMensagem(username, msg);
+            msgEl.value = '';
+            msgEl.focus();
+        }
+
+        document.getElementById('msg').addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                enviar();
+            }
         });
-        div.scrollTop = div.scrollHeight;
-    }
-
-    function entrar(){
-        username = document.getElementById('user').value.trim();
-        if(!username) {
-            alert('Por favor, introduza um nome de utilizador');
-            return;
-        }
-        document.getElementById('joinSection').style.display = 'none';
-        document.getElementById('messagesSection').style.display = 'block';
-        document.getElementById('exitSection').style.display = 'block';
-        document.getElementById('userName').textContent = '👤 ' + username + ' ligado';
-        loadMessages();
-        
-        // Inicia polling rápido para tempo real
-        pollInterval = setInterval(loadMessages, 600);
-        
-        if (bc) {
-          bc.postMessage({ type: 'userJoined', user: username });
-        }
-        
-        document.getElementById('msg').focus();
-    }
-
-    function enviar(){
-        const txt = document.getElementById('msg').value.trim();
-        if(!txt) return;
-        const key = 'chatroom_msgs_' + roomCode;
-        const arr = JSON.parse(localStorage.getItem(key) || '[]');
-        const newMsg = { user: username, msg: txt, time: Date.now() };
-        arr.push(newMsg);
-        localStorage.setItem(key, JSON.stringify(arr));
-        
-        // Broadcast para outras abas
-        if (bc) {
-          bc.postMessage({ type: 'newMessage', message: newMsg });
-        }
-        
-        document.getElementById('msg').value = '';
-        loadMessages();
-        document.getElementById('msg').focus();
-    }
-
-    document.addEventListener('keydown', function(e){
-        if(e.key === 'Enter' && document.activeElement.id === 'msg') {
-            e.preventDefault();
-            enviar();
-        }
-    });
-
-    // Monitorar alterações do localStorage de outras abas
-    window.addEventListener('storage', function(e) {
-      if (e.key === 'chatroom_msgs_' + roomCode) {
-        loadMessages();
-      }
-    });
-
-    window.addEventListener('beforeunload', () => {
-      if(bc) bc.close();
-      if(pollInterval) clearInterval(pollInterval);
-    });
     </script>
 </body>
 </html>

@@ -3,50 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Corporativo - Entrar</title>
+    <title>Anarchroom</title>
     <link rel="stylesheet" href="anarcroom.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-          <div class="header-logo">
-            <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo">
-          </div>
-          <h1>Chat Corporativo</h1>
-          <p class="tagline">Acesso Seguro à Sala</p>
+
+<div class="container">
+    <div class="header">
+        <div class="header-logo">
+            <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo Anarchroom">
         </div>
-        
-        <div class="section">
-            <div class="form-group">
-                <label for="codigo">Código da Sala (6 caracteres):</label>
-                <input type="text" id="codigo" placeholder="A1B2C3" required maxlength="6" autocomplete="off" style="text-transform: uppercase; text-align: center; font-size: 1.1rem; letter-spacing: 1px;">
-            </div>
-            
-            <button type="button" onclick="entrarSala()" style="width: 100%; margin: 20px 0;">
-                Entrar na Sala
-            </button>
-        </div>
-        
-        <div class="section" style="text-align: center;">
-            <a href="index.html">Voltar ao Início</a>
-        </div>
+        <h1>⚡ ANARCHROOM ⚡</h1>
+        <p class="tagline">Chat Livre • Anónimo • Sem Registo</p>
     </div>
 
-    <script>
-        function entrarSala() {
-            const codigo = document.getElementById("codigo").value.trim().toUpperCase();
-            if (!codigo || codigo.length !== 6) {
-                alert("O código deve ter exatamente 6 caracteres!");
-                return;
-            }
-            window.location.href = `chat_novo.html?room=${codigo}`;
-        }
-        
-        document.getElementById("codigo").addEventListener("keydown", function(e) {
-            if (e.key === "Enter") {
-                entrarSala();
-            }
-        });
-    </script>
+    <div class="section">
+        <p>
+            Bem-vindo a <strong>Anarchroom</strong> — conversa livre,
+            sem vigilância e sem guardar histórico.
+        </p>
+        <p style="margin-top:12px; font-size:0.9rem; color:#4a5568;">
+            Sem Registo • Sem Vigilância • Sem Histórico • Livre
+        </p>
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <h2>⊙ Entrar</h2>
+        <p style="color:#4a5568;">
+            Introduz o código da sala para continuar.
+        </p>
+
+        <div class="form-group">
+            <input type="text"
+                   placeholder="A1B2C3"
+                   maxlength="6"
+                   autocomplete="off"
+                   style="text-transform: uppercase; text-align: center; font-size: 1.1rem; letter-spacing: 1px;">
+        </div>
+
+        <button style="width:100%; margin-top:15px;">
+            Entrar na Sala
+        </button>
+    </div>
+
+    <hr>
+
+    <div class="section" style="text-align:center;">
+        <a href="index.html">Voltar ao Início</a>
+    </div>
+</div>
+
 </body>
 </html>

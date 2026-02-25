@@ -13,32 +13,26 @@
     <div class="header-logo">
       <img src="374762a1-c03d-478c-acde-97469eea0fa3.png" alt="Logo">
     </div>
-    <h1>Chat Corporativo</h1>
+    <h1>ANARCHROOM</h1>
     <p class="tagline">Sala Criada com Sucesso</p>
   </div>
 
   <div class="section" style="text-align:center;">
-    <h2 id="codigoSala" style="color:#0066cc; font-size:2.5rem; margin:20px 0;"></h2>
-    <p class="tagline">Código para partilhar com outros utilizadores</p>
+    <h2 id="codigoSala" style="color:#0066cc; font-size:2.5rem;"></h2>
+    <p class="tagline">Código para partilhar</p>
   </div>
 
   <div class="section" style="text-align:center; background:#f0f4ff;">
-    <p style="color:#0066cc; font-weight:600;">
+    <p>
       Ligação:
-      <code id="linkSala" style="background:#fff; padding:8px 12px; border-radius:4px; font-family:monospace;"></code>
+      <code id="linkSala"></code>
     </p>
   </div>
 
   <div class="section" style="text-align:center;">
-    <p style="margin-bottom:20px; color:#6b7280;">
-      Partilhe este código com outros utilizadores para acederem à sala.
-    </p>
-
-    <button onclick="entrarSala()" style="width:100%; margin:20px 0;">
-      Entrar na Sala Agora
-    </button>
-
-    <a href="index.html">Voltar ao Início</a>
+    <button onclick="entrarSala()">Entrar na Sala</button>
+    <br><br>
+    <a href="index.html">Voltar ao início</a>
   </div>
 </div>
 
@@ -49,8 +43,8 @@ function gerarCodigo() {
 
 const codigo = gerarCodigo();
 
-document.getElementById('codigoSala').textContent = codigo;
-document.getElementById('linkSala').textContent =
+document.getElementById("codigoSala").textContent = codigo;
+document.getElementById("linkSala").textContent =
   `chat.html?room=${codigo}`;
 
 function entrarSala() {

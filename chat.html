@@ -27,7 +27,7 @@
       <input type="text" id="user" placeholder="Escolha um nome" autocomplete="off">
     </div>
 
-    <button onclick="entrar()" style="width:100%;">⊙ Entrar ⊙</button>
+    <button onclick="entrar()" style="width:100%;">⊙ Entrar »»»»»»»»⊙</button>
   </div>
 
   <!-- CHAT -->
@@ -44,7 +44,7 @@
         <label for="msg">Mensagem</label>
         <div class="input-wrapper">
           <input id="msg" type="text" placeholder="Escreva aqui…" autocomplete="off">
-          <button onclick="enviar()">⊙ Enviar ⊙</button>
+          <button onclick="enviar()">⊙ Enviar »»»»»»⊙</button>
         </div>
       </div>
     </div>
@@ -59,6 +59,8 @@
 
 <script>
 let username = '';
+const ROOM = new URLSearchParams(location.search).get('room') || 'GLOBAL';
+let socket = null;
 
 function formatTime() {
   const d = new Date();
@@ -73,6 +75,32 @@ function adicionarMensagem(user, msg) {
   container.scrollTop = container.scrollHeight;
 }
 
+// Load socket.io client dynamically from same host on port 3000
+(function initSocket() {
+  const WS_URL = `${location.protocol}//${location.hostname}:3000`;
+  const script = document.createElement('script');
+  script.src = `${WS_URL}/socket.io/socket.io.js`;
+  script.onload = () => {
+    try {
+      socket = io(WS_URL);
+      socket.on('connect', () => {
+        console.log('Connected to socket server');
+        if (username) socket.emit('join', ROOM);
+      });
+      socket.on('chat message', data => {
+        // data: { user, msg }
+        adicionarMensagem(data.user, data.msg);
+      });
+    } catch (e) {
+      console.warn('socket.io client load error', e);
+    }
+  };
+  script.onerror = () => {
+    console.warn('Could not load socket.io client from', script.src);
+  };
+  document.head.appendChild(script);
+})();
+
 function entrar() {
   const input = document.getElementById('user');
   username = input.value.trim();
@@ -83,9 +111,13 @@ function entrar() {
 
   document.getElementById('joinSection').style.display = 'none';
   document.getElementById('chat').style.display = 'block';
-  document.getElementById('userDisplay').textContent = '👤 ' + username;
+  document.getElementById('userDisplay').textContent = '👤 ' + username + ' — Sala: ' + ROOM;
 
   adicionarMensagem('Sistema', `${username} entrou no chat`);
+
+  if (socket && socket.connected) {
+    socket.emit('join', ROOM);
+  }
 }
 
 function enviar() {
@@ -93,7 +125,13 @@ function enviar() {
   const msg = msgEl.value.trim();
   if (!msg) return;
 
+  // show immediately
   adicionarMensagem(username, msg);
+
+  if (socket && socket.connected) {
+    socket.emit('chat message', { room: ROOM, user: username, msg });
+  }
+
   msgEl.value = '';
 }
 
